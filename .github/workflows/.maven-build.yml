@@ -1,0 +1,29 @@
+name: Maven CI/CD
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Publish to JFrog Artifactory
+        run: mvn deploy
+        env:
+          jfrog.artifactory.url: ${{ secrets.JF_URL }}
+          jfrog.username: ${{ secrets.JF_USERNAME }}
+          jfrog.password: ${{ secrets.JF_PASSWORD }}
